@@ -33,7 +33,11 @@ namespace Vanila.Logging {
         /// <summary>
         /// トレース情報を表します。
         /// </summary>
-        Trace = 1000
+        Trace = 1000,
+        /// <summary>
+        /// 
+        /// </summary>
+        None = 0
     }
 
 

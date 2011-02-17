@@ -15,7 +15,7 @@ namespace Vanila.Logging {
         /// <summary>
         /// 
         /// </summary>
-        private Level Loglevel_;
+        private Level loglevel_;
         /// <summary>
         /// 
         /// </summary>

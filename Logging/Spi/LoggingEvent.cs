@@ -61,27 +61,27 @@ namespace Vanila.Logging.Spi {
         /// <summary>
         /// 
         /// </summary>
-        private string fqn_of_category_class_;
+        private string fqn_of_category_class_ = string.Empty;
         /// <summary>
         /// 
         /// </summary>
-        private Level level_;
+        private Level level_ = Level.Debug;
         /// <summary>
         /// 
         /// </summary>
-        private LocationInfo location_infomation_;
+        private LocationInfo location_infomation_ = null;
         /// <summary>
         /// 
         /// </summary>
-        private string logger_name_;
+        private string logger_name_ = string.Empty;
         /// <summary>
         /// 
         /// </summary>
-        private Category logger_;
+        private Category logger_ = null;
         /// <summary>
         /// 
         /// </summary>
-        private long time_stamp_;
+        private long time_stamp_ = 0;
 
     }
 

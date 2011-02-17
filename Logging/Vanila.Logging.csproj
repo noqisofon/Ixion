@@ -7,25 +7,27 @@
     <ProjectGuid>{5629C126-EB8F-4C5C-8412-63C3CD605486}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Logging</RootNamespace>
-    <AssemblyName>Logging</AssemblyName>
+    <RootNamespace>Vanila.Logging</RootNamespace>
+    <AssemblyName>Vanila.Logging</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\lib\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\lib\Debug\Vanila.Logging.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\lib\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\lib\Release\Vanila.Logging.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -38,9 +40,12 @@
     <Compile Include="Layout.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Spi\AppenderAttachable.cs" />
+    <Compile Include="Spi\Configurator.cs" />
+    <Compile Include="Spi\ErrorCode.cs" />
     <Compile Include="Spi\Filter.cs" />
     <Compile Include="Spi\LocationInfo.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="Spi\LoggerRepository.cs" />
     <Compile Include="Spi\LoggingEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
