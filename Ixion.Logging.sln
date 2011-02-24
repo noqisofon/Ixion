@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vanila.Logging", "Logging\Vanila.Logging.csproj", "{5629C126-EB8F-4C5C-8412-63C3CD605486}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ixion.Logging", "Logging\Ixion.Logging.csproj", "{5629C126-EB8F-4C5C-8412-63C3CD605486}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

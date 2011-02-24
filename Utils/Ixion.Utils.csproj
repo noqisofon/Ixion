@@ -4,11 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5629C126-EB8F-4C5C-8412-63C3CD605486}</ProjectGuid>
+    <ProjectGuid>{15D4862D-2A28-4953-8919-B6F060046E0E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Vanila.Logging</RootNamespace>
-    <AssemblyName>Vanila.Logging</AssemblyName>
+    <RootNamespace>Ixion.Utils</RootNamespace>
+    <AssemblyName>Ixion.Utils</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -18,16 +18,16 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\lib\Debug\Vanila.Logging.XML</DocumentationFile>
+    <DocumentationFile>..\lib\Debug\Ixion.Utils.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\lib\Release\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\lib\Release\Vanila.Logging.XML</DocumentationFile>
+    <DocumentationFile>..\lib\Release\Ixion.Utils.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -35,19 +35,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Appender.cs" />
-    <Compile Include="Category.cs" />
-    <Compile Include="Layout.cs" />
-    <Compile Include="Level.cs" />
-    <Compile Include="Spi\AppenderAttachable.cs" />
-    <Compile Include="Spi\Configurator.cs" />
-    <Compile Include="Spi\ErrorCode.cs" />
-    <Compile Include="Spi\Filter.cs" />
-    <Compile Include="Spi\LocationInfo.cs" />
-    <Compile Include="Logger.cs" />
-    <Compile Include="Spi\LoggerRepository.cs" />
-    <Compile Include="Spi\LoggingEvent.cs" />
+    <Compile Include="Formats\Csv\AbstractFieldFilter.cs" />
+    <Compile Include="Formats\Csv\CsvWriter.cs" />
+    <Compile Include="Formats\Csv\IFieldFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Formats\Csv\SimpleFieldFilter.cs" />
+    <Compile Include="Relation\Common\DatabaseProvider.cs" />
+    <Compile Include="Relation\Sql\SqlServerProvider.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

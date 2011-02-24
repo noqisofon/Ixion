@@ -2,7 +2,7 @@
 using System;
 
 
-namespace Vanila.Logging.Spi {
+namespace Ixion.Logging.Spi {
 
 
     /// <summary>
@@ -55,6 +55,14 @@ namespace Vanila.Logging.Spi {
         /// </summary>
         public Category Logger {
             get { return this.logger_; }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public long TimeStamp {
+            get { return this.time_stamp_; }
         }
 
 

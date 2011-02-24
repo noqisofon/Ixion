@@ -2,7 +2,7 @@ using System;
 using System.Data.Common;
 
 
-namespace Vanila.Utils.Relation.Common {
+namespace Ixion.Utils.Relation.Common {
 
 
     /// <summary>

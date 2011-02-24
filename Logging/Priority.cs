@@ -1,42 +1,47 @@
 /* -*- encoding: utf-8; -*- */
 using System;
+using System.Collections.Generic;
 
 
-namespace Ixion.Logging.Spi {
+namespace Ixion.Logging {
 
 
     /// <summary>
-    ///
+    /// 
     /// </summary>
-    public enum ErrorCode : uint {
+    public enum Priority : uint {
         /// <summary>
         /// 
         /// </summary>
-        AddressParseFailure = 2 << 1,
+        All = 1000,
         /// <summary>
         /// 
         /// </summary>
-        CloseFailure = 2 << 2,
+        Trace = 900,
         /// <summary>
         /// 
         /// </summary>
-        FileOpenFailure = 2 << 3,
+        Debug = 600,
         /// <summary>
         /// 
         /// </summary>
-        FlushFailure = 2 << 4,
+        Info = 500,
         /// <summary>
         /// 
         /// </summary>
-        GenericFailure = 2 << 5,
+        Warn = 400,
         /// <summary>
         /// 
         /// </summary>
-        MissingLayout = 2 << 6,
+        Error = 300,
         /// <summary>
         /// 
         /// </summary>
-        WriteFailure = 2 << 7
+        Fatal = 100,
+        /// <summary>
+        /// 
+        /// </summary>
+        None = 0
     }
 
 

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vanila.Utils", "Utils\Vanila.Utils.csproj", "{15D4862D-2A28-4953-8919-B6F060046E0E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ixion.Utils", "Utils\Ixion.Utils.csproj", "{15D4862D-2A28-4953-8919-B6F060046E0E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

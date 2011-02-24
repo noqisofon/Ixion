@@ -3,27 +3,20 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace Vanila.Logging {
+namespace Ixion.Logging {
 
 
     /// <summary>
     ///
     /// </summary>
-    public class Logger {
-
-
+    public class Logger : Category {
         /// <summary>
         /// 
         /// </summary>
-        private Level loglevel_;
-        /// <summary>
-        /// 
-        /// </summary>
-        private Layout layout_;
-        /// <summary>
-        /// 
-        /// </summary>
-        private List<Appender> appenders_ = new List<Appender>();
+        /// <param name="name"></param>
+        public Logger(string name)
+            : base( name ) {
+        }
     }
 
 

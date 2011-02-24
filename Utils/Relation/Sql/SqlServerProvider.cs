@@ -3,10 +3,10 @@ using System.Data.Common;
 using System.Data.SqlClient;
 
 
-namespace Vanila.Utils.Relation.Sql {
+namespace Ixion.Utils.Relation.Sql {
 
 
-    using Vanila.Utils.Relation.Common;
+    using Ixion.Utils.Relation.Common;
 
 
     /// <summary>

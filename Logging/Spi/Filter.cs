@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace Vanila.Logging.Spi {
+namespace Ixion.Logging.Spi {
 
 
     /// <summary>

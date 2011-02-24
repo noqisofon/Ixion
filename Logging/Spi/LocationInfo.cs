@@ -2,7 +2,7 @@
 using System;
 
 
-namespace Vanila.Logging.Spi {
+namespace Ixion.Logging.Spi {
 
 
     /// <summary>

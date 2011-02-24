@@ -5,7 +5,7 @@ using System.IO;
 using System.Text;
 
 
-namespace Vanila.Utils.Formats.Csv {
+namespace Ixion.Utils.Formats.Csv {
 
 
     /// <summary>
@@ -348,15 +348,16 @@ namespace Vanila.Utils.Formats.Csv {
         /// </summary>
         /// <param name="disposing">マネージリソースとアンマネージリソースの両方を解放する場合は真。</param>
         private void Dispose(bool disposing) {
-            ShouldBeDisposed();
+            if ( !this.IsClosed ) {
 
-            if ( disposing ) {
-                // disposing が真のときだけ Close() を呼び出します。
-                this.writer_.Close();
+                if ( disposing ) {
+                    // disposing が真のときだけ Close() を呼び出します。
+                    this.writer_.Close();
+                }
+                this.writer_ = null;
+
+                this.is_closed_ = true;
             }
-            this.writer_ = null;
-
-            this.is_closed_ = true;
         }
 
 

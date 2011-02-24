@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace Vanila.Utils.Formats.Csv {
+namespace Ixion.Utils.Formats.Csv {
 
 
     /// <summary>

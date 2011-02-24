@@ -2,19 +2,19 @@
 using System;
 
 
-namespace Vanila.Logging.Spi {
+namespace Ixion.Logging.Spi {
 
 
     /// <summary>
     ///
     /// </summary>
-    public interface Configurator {
+    public interface IConfigurator {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="url"></param>
         /// <param name="repository"></param>
-        void DoConfigure(Uri url, LoggerRepository repository);
+        void DoConfigure(Uri url, ILoggerRepository repository);
     }
 
 
