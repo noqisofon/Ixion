@@ -174,8 +174,8 @@ namespace Ixion.Logging {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="logging_event"></param>
-        protected abstract void Append(LoggingEvent logging_event);
+        /// <param name="log_event"></param>
+        protected abstract void Append(LoggingEvent log_event);
 
 
         /// <summary>

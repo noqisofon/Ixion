@@ -79,10 +79,10 @@ namespace Ixion.Logging {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="logging_event"></param>
-        public void CallAppenders(LoggingEvent logging_event) {
+        /// <param name="log_event"></param>
+        public void CallAppenders(LoggingEvent log_event) {
             foreach ( IAppender appender in this.appenders_ ) {
-                appender.DoAppend( logging_event );
+                appender.DoAppend( log_event );
             }
         }
 

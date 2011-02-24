@@ -22,9 +22,9 @@ namespace Ixion.Logging {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="logging_event"></param>
+        /// <param name="log_event"></param>
         /// <returns></returns>
-        public abstract string Format(LoggingEvent logging_event);
+        public abstract string Format(LoggingEvent log_event);
 
 
         /// <summary>

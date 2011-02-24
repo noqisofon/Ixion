@@ -39,9 +39,9 @@ namespace Ixion.Logging.Spi {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="logging_event"></param>
+        /// <param name="log_event"></param>
         /// <returns></returns>
-        public abstract int Decide(LoggingEvent logging_event);
+        public abstract int Decide(LoggingEvent log_event);
 
 
         /// <summary>
