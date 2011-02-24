@@ -30,7 +30,7 @@ namespace Ixion.Logging {
             this.filters = new List<Filter>();
             this.Layout = null;
             this.Name = string.Empty;
-            this.Threshold = Priority.Debug;
+            this.Threshold = Level.Debug;
         }
 
 
@@ -45,7 +45,7 @@ namespace Ixion.Logging {
         /// <summary>
         /// 
         /// </summary>
-        public Priority Threshold {
+        public Level Threshold {
             get { return this.threshold_; }
             set { this.threshold_ = value; }
         }
@@ -54,10 +54,10 @@ namespace Ixion.Logging {
         /// <summary>
         /// 指定されたプライオリティがアペンダーのしきい値を下回っているかどうか判別します。
         /// </summary>
-        /// <param name="priority"></param>
+        /// <param name="level"></param>
         /// <returns></returns>
-        public bool IsAsSevereAsThreshould(Priority priority) {
-            return this.Threshold >= priority;
+        public bool IsAsSevereAsThreshould(Level level) {
+            return this.Threshold.CompareTo( level ) > 0;
         }
 
 
@@ -210,7 +210,25 @@ namespace Ixion.Logging {
         /// <summary>
         /// 
         /// </summary>
-        private Priority threshold_;
+        private Level threshold_;
+
+
+        /// <summary>
+        ///
+        /// </summary>
+        internal int objectID { get { return object_id_; } }
+
+
+        /// <summary>
+        ///
+        /// </summary>
+        internal readonly int object_id_ = Interlocked.Increment( ref object_type_count_ );
+
+
+        /// <summary>
+        ///
+        /// </summary>
+        private static int object_type_count_;
     }
 
 

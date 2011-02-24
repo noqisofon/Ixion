@@ -28,7 +28,7 @@ namespace Ixion.Logging.Spi {
         /// </summary>
         /// <param name="e"></param>
         /// <param name="fqn_of_caling_class"></param>
-        public LocationInfo(Exception e, string fqn_of_caling_class) {
+        public LocationInfo(Exception e, Type fqn_of_caling_class) {
         }
 
 

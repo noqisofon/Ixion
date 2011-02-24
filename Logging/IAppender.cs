@@ -11,7 +11,7 @@ namespace Ixion.Logging {
 
 
     /// <summary>
-    ///
+    /// ログ出力の方法を表します。
     /// </summary>
     public interface IAppender {
         /// <summary>

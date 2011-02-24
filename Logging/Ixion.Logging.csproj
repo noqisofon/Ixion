@@ -38,6 +38,8 @@
     <Compile Include="IAppender.cs" />
     <Compile Include="AppenderSkeleton.cs" />
     <Compile Include="Category.cs" />
+    <Compile Include="ILogger.cs" />
+    <Compile Include="ILoggerAdapter.cs" />
     <Compile Include="Layout.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Priority.cs" />

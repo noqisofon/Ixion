@@ -1,6 +1,7 @@
 /* -*- encoding: utf-8; -*- */
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 
 namespace Ixion.Logging {
@@ -12,7 +13,7 @@ namespace Ixion.Logging {
     /// <summary>
     /// 
     /// </summary>
-    public class Category : IAppenderAttachable {
+    public class Category : IAppenderAttachable, ILogger {
         /// <summary>
         /// 
         /// </summary>
@@ -28,6 +29,14 @@ namespace Ixion.Logging {
         /// </summary>
         public Category Parent {
             get { return this.parent_; }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Name {
+            get { return this.name_; }
         }
 
 
@@ -52,9 +61,73 @@ namespace Ixion.Logging {
         /// <summary>
         /// 
         /// </summary>
-        public ILoggerRepository LoggerRepository {
+        /// <param name="level"></param>
+        /// <param name="message"></param>
+        public void Log(Level level, object message) {
+            Log( level, message, null );
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="level"></param>
+        /// <param name="message"></param>
+        /// <param name="e"></param>
+        public void Log(Level level, object message, Exception e) {
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logging_event"></param>
+        public void CallAppenders(LoggingEvent logging_event) {
+            foreach ( IAppender appender in this.appenders_ ) {
+                appender.DoAppend( logging_event );
+            }
+        }
+
+
+        #region Ithis.Logger メンバ
+        /// <summary>
+        /// 
+        /// </summary>
+        public ILoggerRepository Repository {
             get { return this.repository_; }
         }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="level"></param>
+        public bool IsEnableFor(Level level) {
+            return this.Level.GetHashCode() >= level.GetHashCode();
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="log_event"></param>
+        public void Log(LoggingEvent log_event) {
+            if ( log_event == null )
+                return;
+
+            if ( this.IsEnableFor( log_event.Level ) )
+                ForcedLog( log_event );
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="declare_type"></param>
+        /// <param name="level"></param>
+        /// <param name="message"></param>
+        /// <param name="e"></param>
+        public void Log(Type declare_type, Level level, object message, Exception e) {
+            if ( IsEnableFor( level ) )
+                ForcedLog( declare_type, level, message, e );
+        }
+        #endregion
 
 
         #region AppenderAttachable メンバ
@@ -131,18 +204,6 @@ namespace Ixion.Logging {
         #endregion
 
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public static Category GetRoot() {
-            if ( Root == null ) {
-                return null;
-            }
-            return Root;
-        }
-
-
         #region protected methods
         /// <summary>
         /// 
@@ -151,6 +212,26 @@ namespace Ixion.Logging {
         /// <returns></returns>
         protected string GetResourceBundleString(string key) {
             return string.Empty;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        protected void ForcedLog(LoggingEvent log_event) {
+            //log_event.EnsureRepository(this.Hierarchy);
+            CallAppenders( log_event );
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="declare_type"></param>
+        /// <param name="level"></param>
+        /// <param name="message"></param>
+        /// <param name="e"></param>
+        protected void ForcedLog(Type declare_type, Level level, object message, Exception e) {
+            CallAppenders( new LoggingEvent( declare_type, this, level, message, e ) );
         }
         #endregion
 
@@ -183,12 +264,6 @@ namespace Ixion.Logging {
         /// 
         /// </summary>
         private IList<IAppender> appenders_ = null;
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private static Category Root = null;
     }
 
 

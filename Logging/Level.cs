@@ -57,6 +57,15 @@ namespace Ixion.Logging {
         /// <summary>
         /// 
         /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode() {
+            return this.level_;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="val"></param>
         /// <returns></returns>
         public static Level ToLevel(int val) {

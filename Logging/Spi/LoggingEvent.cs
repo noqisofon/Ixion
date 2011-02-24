@@ -13,14 +13,46 @@ namespace Ixion.Logging.Spi {
         /// <summary>
         /// 
         /// </summary>
-        public LoggingEvent() {
+        /// <param name="fqn_of_category_class"></param>
+        /// <param name="logger"></param>
+        /// <param name="level"></param>
+        /// <param name="message"></param>
+        /// <param name="e"></param>
+        public LoggingEvent(Type fqn_of_category_class,
+                             Category logger,
+                             Level level,
+                             object message,
+                             Exception e)
+            : this( fqn_of_category_class, logger, DateTime.Now, level, message, e ) {
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fqn_of_category_class"></param>
+        /// <param name="logger"></param>
+        /// <param name="time_stamp"></param>
+        /// <param name="level"></param>
+        /// <param name="message"></param>
+        /// <param name="e"></param>
+        public LoggingEvent(Type fqn_of_category_class,
+                             Category logger,
+                             DateTime time_stamp,
+                             Level level,
+                             object message,
+                             Exception e) {
+            this.fqn_of_category_class_ = fqn_of_category_class;
+            this.level_ = level;
+            this.logger_name_ = logger.Name;
+            this.logger_ = logger;
+            this.location_infomation_ = new LocationInfo( e, fqn_of_category_class );
+            this.time_stamp_ = time_stamp;
         }
 
 
         /// <summary>
         /// 
         /// </summary>
-        public string FqnOfLoggerClass {
+        public Type FqnOfLoggerClass {
             get { return this.fqn_of_category_class_; }
         }
 
@@ -61,7 +93,7 @@ namespace Ixion.Logging.Spi {
         /// <summary>
         /// 
         /// </summary>
-        public long TimeStamp {
+        public DateTime TimeStamp {
             get { return this.time_stamp_; }
         }
 
@@ -69,11 +101,11 @@ namespace Ixion.Logging.Spi {
         /// <summary>
         /// 
         /// </summary>
-        private string fqn_of_category_class_ = string.Empty;
+        private Type fqn_of_category_class_;
         /// <summary>
         /// 
         /// </summary>
-        private Level level_ = Level.Debug;
+        private Level level_;
         /// <summary>
         /// 
         /// </summary>
@@ -81,15 +113,15 @@ namespace Ixion.Logging.Spi {
         /// <summary>
         /// 
         /// </summary>
-        private string logger_name_ = string.Empty;
+        private string logger_name_;
         /// <summary>
         /// 
         /// </summary>
-        private Category logger_ = null;
+        private Category logger_;
         /// <summary>
         /// 
         /// </summary>
-        private long time_stamp_ = 0;
+        private DateTime time_stamp_;
 
     }
 
