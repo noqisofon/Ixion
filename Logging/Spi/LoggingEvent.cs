@@ -42,6 +42,7 @@ namespace Ixion.Logging.Spi {
                              Exception e) {
             this.fqn_of_category_class_ = fqn_of_category_class;
             this.level_ = level;
+            this.message_ = message;
             this.logger_name_ = logger.Name;
             this.logger_ = logger;
             this.location_infomation_ = new LocationInfo( e, fqn_of_category_class );
@@ -62,6 +63,14 @@ namespace Ixion.Logging.Spi {
         /// </summary>
         public Level Level {
             get { return this.level_; }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public object Message {
+            get { return this.message_; }
         }
 
 
@@ -106,6 +115,10 @@ namespace Ixion.Logging.Spi {
         /// 
         /// </summary>
         private Level level_;
+        /// <summary>
+        /// 
+        /// </summary>
+        private object message_;
         /// <summary>
         /// 
         /// </summary>
