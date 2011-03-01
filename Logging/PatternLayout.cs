@@ -7,6 +7,7 @@ using System.Text;
 namespace Ixion.Logging {
 
 
+    using Ixion.Logging.Helper;
     using Ixion.Logging.Spi;
 
 
@@ -14,6 +15,21 @@ namespace Ixion.Logging {
     ///
     /// </summary>
     public class PatternLayout : Layout {
+        /// <summary>
+        /// 
+        /// </summary>
+        public PatternLayout()
+            : this( DefaultConversionPattern ) {
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pattern"></param>
+        public PatternLayout(string pattern) {
+            this.parser_ = CreatePatternParser( pattern );
+        }
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -30,6 +46,36 @@ namespace Ixion.Logging {
         public override bool IgnoreException {
             get { return false; }
         }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pattern"></param>
+        /// <returns></returns>
+        protected virtual PatternParser CreatePatternParser(string pattern) {
+            return new PatternParser( pattern );
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static readonly string DefaultConversionPattern = "%r [%t] %p %c %x - %m%n";
+        /// <summary>
+        /// 
+        /// </summary>
+        protected static readonly int BufferSize = 4096;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected static readonly int MaxCapacity = 4096;
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private PatternParser parser_;
     }
 
 

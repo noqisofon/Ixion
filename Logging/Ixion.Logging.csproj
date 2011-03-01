@@ -36,6 +36,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleAppender.cs" />
+    <Compile Include="Helper\FormattingInfo.cs" />
+    <Compile Include="Helper\PatternConvertor.cs" />
+    <Compile Include="Helper\PatternParser.cs" />
     <Compile Include="IAppender.cs" />
     <Compile Include="AppenderSkeleton.cs" />
     <Compile Include="ILayout.cs" />

@@ -80,7 +80,7 @@ namespace Ixion.Logging {
         /// </summary>
         /// <param name="log_event"></param>
         protected override void Append(LoggingEvent log_event) {
-            this.writer_.Write(this.layout_.Format(log_event));
+            this.writer_.Write( this.layout_.Format( log_event ) );
         }
 
 
