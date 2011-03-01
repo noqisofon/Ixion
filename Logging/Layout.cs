@@ -11,11 +11,11 @@ namespace Ixion.Logging {
     /// <summary>
     ///
     /// </summary>
-    public abstract class Layout {
+    public abstract class Layout : ILayout {
         /// <summary>
         /// 
         /// </summary>
-        public Layout() {
+        protected Layout() {
         }
 
 
@@ -31,8 +31,8 @@ namespace Ixion.Logging {
         /// 
         /// </summary>
         /// <returns></returns>
-        public virtual string GetContentType() {
-            return string.Empty;
+        public virtual string ContentType {
+            get { return string.Empty; }
         }
 
 
@@ -40,8 +40,8 @@ namespace Ixion.Logging {
         /// 
         /// </summary>
         /// <returns></returns>
-        public virtual string GetFooter() {
-            return string.Empty;
+        public virtual string  Footer {
+            get { return string.Empty; }
         }
 
 
@@ -49,8 +49,8 @@ namespace Ixion.Logging {
         /// 
         /// </summary>
         /// <returns></returns>
-        public virtual string GetHeader() {
-            return string.Empty;
+        public virtual string Header {
+            get { return string.Empty; }
         }
 
 
@@ -58,7 +58,7 @@ namespace Ixion.Logging {
         /// 
         /// </summary>
         /// <returns></returns>
-        public abstract bool IgnoreThrowable();
+        public abstract bool IgnoreException { get; }
     }
 
 

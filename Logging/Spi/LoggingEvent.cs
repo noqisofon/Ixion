@@ -19,7 +19,7 @@ namespace Ixion.Logging.Spi {
         /// <param name="message"></param>
         /// <param name="e"></param>
         public LoggingEvent(Type fqn_of_category_class,
-                             Category logger,
+                             Logger logger,
                              Level level,
                              object message,
                              Exception e)
@@ -35,7 +35,7 @@ namespace Ixion.Logging.Spi {
         /// <param name="message"></param>
         /// <param name="e"></param>
         public LoggingEvent(Type fqn_of_category_class,
-                             Category logger,
+                             Logger logger,
                              DateTime time_stamp,
                              Level level,
                              object message,
@@ -94,7 +94,7 @@ namespace Ixion.Logging.Spi {
         /// <summary>
         /// 
         /// </summary>
-        public Category Logger {
+        public Logger Logger {
             get { return this.logger_; }
         }
 
@@ -130,7 +130,7 @@ namespace Ixion.Logging.Spi {
         /// <summary>
         /// 
         /// </summary>
-        private Category logger_;
+        private Logger logger_;
         /// <summary>
         /// 
         /// </summary>

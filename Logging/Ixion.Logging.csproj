@@ -35,14 +35,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleAppender.cs" />
     <Compile Include="IAppender.cs" />
     <Compile Include="AppenderSkeleton.cs" />
-    <Compile Include="Category.cs" />
+    <Compile Include="ILayout.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="ILoggerAdapter.cs" />
     <Compile Include="Layout.cs" />
     <Compile Include="Level.cs" />
+    <Compile Include="PatternLayout.cs" />
     <Compile Include="Priority.cs" />
+    <Compile Include="RootLogger.cs" />
     <Compile Include="Spi\IAppenderAttachable.cs" />
     <Compile Include="Spi\IConfigurator.cs" />
     <Compile Include="Spi\ErrorCode.cs" />

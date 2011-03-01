@@ -20,7 +20,7 @@ namespace Ixion.Logging.Spi {
         /// 
         /// </summary>
         /// <param name="category"></param>
-        void EmitNoAppenderWarning(Category category);
+        void EmitNoAppenderWarning(Logger category);
 
 
         /// <summary>
@@ -36,14 +36,14 @@ namespace Ixion.Logging.Spi {
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="appender"></param>
-        void FireAddAppenderEvent(Category logger, IAppender appender);
+        void FireAddAppenderEvent(Logger logger, IAppender appender);
 
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        IEnumerator<Category> GetCurrentLoggers();
+        IEnumerator<Logger> GetCurrentLoggers();
 
 
         /// <summary>

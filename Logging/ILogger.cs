@@ -24,7 +24,7 @@ namespace Ixion.Logging {
         /// 
         /// </summary>
         /// <param name="level"></param>
-        bool IsEnableFor(Level level);
+        bool IsEnabledFor(Level level);
 
 
         /// <summary>
