@@ -1,4 +1,4 @@
-/* -*- encoding: utf-8; -*- */
+ï»¿/* -*- encoding: utf-8; -*- */
 using System;
 using System.Text;
 
@@ -7,7 +7,7 @@ namespace Ixion.Logging.Helper {
 
 
     /// <summary>
-    /// PatternLayout ƒNƒ‰ƒX‚Ì–w‚Ç‚Ìì‹Æ‚Í‚±‚ÌƒNƒ‰ƒX‚ÉˆÚ÷‚³‚ê‚Ü‚·B
+    /// PatternLayout ã‚¯ãƒ©ã‚¹ã®æ®†ã©ã®ä½œæ¥­ã¯ã“ã®ã‚¯ãƒ©ã‚¹ã«ç§»è­²ã•ã‚Œã¾ã™ã€‚
     /// </summary>
     public class PatternParser {
         /// <summary>
