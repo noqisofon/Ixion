@@ -15,7 +15,7 @@ namespace Ixion.Logging {
         /// 
         /// </summary>
         public ConsoleAppender()
-            : this( new PatternLayout() ) {
+            : this( new SimpleLayout() ) {
         }
         /// <summary>
         /// 

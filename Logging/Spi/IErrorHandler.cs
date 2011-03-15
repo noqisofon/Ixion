@@ -20,7 +20,7 @@ namespace Ixion.Logging.Spi {
         /// <param name="message"></param>
         /// <param name="e"></param>
         /// <param name="error_code"></param>
-        void Error(string message, Exception e, int error_code);
+        void Error(string message, Exception e, ErrorCode error_code);
         /// <summary>
         /// 
         /// </summary>
@@ -28,7 +28,7 @@ namespace Ixion.Logging.Spi {
         /// <param name="e"></param>
         /// <param name="error_code"></param>
         /// <param name="log_event"></param>
-        void Error(string message, Exception e, int error_code, LoggingEvent log_event);
+        void Error(string message, Exception e, ErrorCode error_code, LoggingEvent log_event);
 
 
         /// <summary>

@@ -39,7 +39,7 @@ namespace Ixion.Logging.Helper {
         /// </summary>
         /// <returns></returns>
         public PatternConvertor Parse() {
-            return new PatternConvertor();
+            return /*new PatternConvertor()*/null;
         }
 
         

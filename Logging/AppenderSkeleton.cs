@@ -90,7 +90,7 @@ namespace Ixion.Logging {
         /// </summary>
         /// <param name="log_event"></param>
         public void DoAppend(LoggingEvent log_event) {
-            Append( log_event );
+            this.Append( log_event );
         }
 
 
@@ -137,7 +137,7 @@ namespace Ixion.Logging {
         /// <summary>
         /// 
         /// </summary>
-        public abstract bool RequiresLayout();
+        public abstract bool RequiresLayout { get; }
         #endregion
 
 

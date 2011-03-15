@@ -45,7 +45,7 @@ namespace Ixion.Logging.Spi {
             this.message_ = message;
             this.logger_name_ = logger.Name;
             this.logger_ = logger;
-            this.location_infomation_ = new LocationInfo( e, fqn_of_category_class );
+            this.location_infomation_ = new LocationInfo( /*e, */fqn_of_category_class );
             this.time_stamp_ = time_stamp;
         }
 

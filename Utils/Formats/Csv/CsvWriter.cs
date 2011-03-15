@@ -1,119 +1,89 @@
-ï»¿using System;
+using System;
 using System.Data;
 using System.Data.Common;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 
 namespace Ixion.Utils.Formats.Csv {
 
 
     /// <summary>
-    ///ãƒ‡ãƒ¼ã‚¿ã‚’ CSV ãƒ•ã‚¡ã‚¤ãƒ«ã«æ›¸ãå‡ºã—ã¾ã™ã€‚
+    /// ƒf[ƒ^ƒŠ[ƒ_[‚âƒf[ƒ^ƒe[ƒuƒ‹‚Ì“à—e‚ğ CSV ‚É‘‚«o‚·•û–@‚ğ’ñ‹Ÿ‚µ‚Ü‚·B
     /// </summary>
     public class CsvWriter : IDisposable {
+        #region public-constructors
         /// <summary>
-        /// æ›¸ãã ã™ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã‚’æŒ‡å®šã—ã¦ CsvWriter ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã—ã¾ã™ã€‚
+        /// ‘‚«o‚· CSV ƒtƒ@ƒCƒ‹‚ÌƒpƒX‚ğw’è‚µ‚Ä CsvWriter ƒIƒuƒWƒFƒNƒg‚ğì¬‚µ‚Ü‚·B
         /// </summary>
-        /// <param name="path">æ›¸ãã ã™ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹ã€‚</param>
+        /// <param name="path">‘‚«o‚· CSV ƒtƒ@ƒCƒ‹‚ÌƒpƒXB</param>
         public CsvWriter(string path)
             : this( path, Encoding.Default ) {
         }
         /// <summary>
-        /// æ›¸ãã ã™ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã¨ãƒ•ã‚£ãƒ«ã‚¿ãƒ¼ã‚’æŒ‡å®šã—ã¦ CsvWriter ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã—ã¾ã™ã€‚
+        /// ‘‚«o‚· CSV ƒtƒ@ƒCƒ‹‚ÌƒpƒX‚ÆƒGƒ“ƒR[ƒfƒBƒ“ƒO‚ğw’è‚µ‚Ä CsvWriter ƒIƒuƒWƒFƒNƒg‚ğì¬‚µ‚Ü‚·B
         /// </summary>
-        /// <param name="path">æ›¸ãã ã™ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹ã€‚</param>
-        /// <param name="filter"></param>
-        public CsvWriter(string path, IFieldFilter filter)
-            : this( path, Encoding.Default, filter ) {
-        }
-        /// <summary>
-        /// æ›¸ãã ã™ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã¨ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°ã‚’æŒ‡å®šã—ã¦ CsvWriter ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã—ã¾ã™ã€‚
-        /// </summary>
-        /// <param name="path">æ›¸ãã ã™ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹ã€‚</param>
-        /// <param name="fileEncoding">æ›¸ãè¾¼ã¿ç”¨ã®ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°ã€‚</param>
+        /// <param name="path">‘‚«o‚· CSV ƒtƒ@ƒCƒ‹‚ÌƒpƒXB</param>
+        /// <param name="fileEncoding">‘‚«‚ŞƒGƒ“ƒR[ƒfƒBƒ“ƒOB</param>
         public CsvWriter(string path, Encoding fileEncoding)
-            : this( path, fileEncoding, new SimpleFieldFilter() ) {
+            : this( CreateFileStream( path ), Encoding.Default ) {
         }
         /// <summary>
-        /// æ›¸ãã ã™ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã¨ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°ã¨ãƒ•ã‚£ãƒ«ã‚¿ãƒ¼ã‚’æŒ‡å®šã—ã¦ CsvWriter ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã—ã¾ã™ã€‚
+        /// ƒXƒgƒŠ[ƒ€‚ğw’è‚µ‚Ä CsvWriter ƒIƒuƒWƒFƒNƒg‚ğì¬‚µ‚Ü‚·B
         /// </summary>
-        /// <param name="path">æ›¸ãã ã™ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹ã€‚</param>
-        /// <param name="fileEncoding">æ›¸ãè¾¼ã¿ç”¨ã®ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°ã€‚</param>
-        /// <param name="filter"></param>
-        public CsvWriter(string path, Encoding fileEncoding, IFieldFilter filter) {
-            FileInfo file = new FileInfo( path );
-
-            if ( file.Exists )
-                this.writer_ = new StreamWriter( file.Open( FileMode.Truncate, FileAccess.Write ), fileEncoding );
-            else
-                this.writer_ = new StreamWriter( file.Open( FileMode.CreateNew, FileAccess.Write ), fileEncoding );
-
-            this.filter_ = filter;
+        /// <param name="output_stream">‘‚«‚ŞƒfƒoƒCƒX‚Ö‚ÌƒXƒgƒŠ[ƒ€B</param>
+        public CsvWriter(Stream output_stream)
+            : this( CreateStreamWriter( output_stream ) ) {
         }
         /// <summary>
-        /// ã‚¹ãƒˆãƒªãƒ¼ãƒ ã‚’æŒ‡å®šã—ã¦ CsvWriter ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã—ã¾ã™ã€‚
+        /// ƒXƒgƒŠ[ƒ€‚ÆƒGƒ“ƒR[ƒfƒBƒ“ƒO‚ğw’è‚µ‚Ä CsvWriter ƒIƒuƒWƒFƒNƒg‚ğì¬‚µ‚Ü‚·B
         /// </summary>
-        /// <param name="stream">æ›¸ãè¾¼ã‚€ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¸ã®ã‚¹ãƒˆãƒªãƒ¼ãƒ ã€‚</param>
-        public CsvWriter(Stream stream)
-            : this( new StreamWriter( stream ) ) {
+        /// <param name="output_stream">‘‚«‚ŞƒfƒoƒCƒX‚Ö‚ÌƒXƒgƒŠ[ƒ€B</param>
+        /// <param name="stream_encoding">ƒXƒgƒŠ[ƒ€‚ÌƒGƒ“ƒR[ƒfƒBƒ“ƒOB</param>
+        public CsvWriter(Stream output_stream, Encoding stream_encoding)
+            : this( CreateStreamWriter( output_stream, stream_encoding ) ) {
         }
         /// <summary>
-        /// ã‚¹ãƒˆãƒªãƒ¼ãƒ ã¨ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°ã‚’æŒ‡å®šã—ã¦ã€CsvWriter ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã—ã¾ã™ã€‚
+        /// w’è‚³‚ê‚½ƒeƒLƒXƒgƒ‰ƒCƒ^[‚ğg‚Á‚Ä CsvWriter ƒIƒuƒWƒFƒNƒg‚ğ\’z‚µ‚Ü‚·B
         /// </summary>
-        /// <param name="stream">æ›¸ãè¾¼ã‚€ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¸ã®ã‚¹ãƒˆãƒªãƒ¼ãƒ ã€‚</param>
-        /// <param name="streamEncoding">ã‚¹ãƒˆãƒªãƒ¼ãƒ ã®ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°ã€‚</param>
-        public CsvWriter(Stream stream, Encoding streamEncoding)
-            : this( new StreamWriter( stream, streamEncoding ) ) {
-        }
-        /// <summary>
-        /// ã‚¹ãƒˆãƒªãƒ¼ãƒ ã¨ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°ã€ãƒ•ã‚£ãƒ«ã‚¿ãƒ¼ã‚’æŒ‡å®šã—ã¦ã€CsvWriter ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã—ã¾ã™ã€‚
-        /// </summary>
-        /// <param name="stream">æ›¸ãè¾¼ã‚€ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¸ã®ã‚¹ãƒˆãƒªãƒ¼ãƒ ã€‚</param>
-        /// <param name="streamEncoding">ã‚¹ãƒˆãƒªãƒ¼ãƒ ã®ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°ã€‚</param>
-        /// <param name="filter">ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ç”¨ã®ãƒ•ã‚£ãƒ«ã‚¿ãƒ¼ã€‚</param>
-        public CsvWriter(Stream stream, Encoding streamEncoding, IFieldFilter filter)
-            : this( new StreamWriter( stream, streamEncoding ), filter ) {
-        }
-        /// <summary>
-        /// ä»»æ„ã®ãƒ†ã‚­ã‚¹ãƒˆãƒ©ã‚¤ã‚¿ãƒ¼ã‚’æŒ‡å®šã—ã¦ã€CsvWriter ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã—ã¾ã™ã€‚
-        /// </summary>
-        /// <param name="writer">CSV æ›¸ãè¾¼ã¿ã«ä½¿ç”¨ã™ã‚‹ãƒ†ã‚­ã‚¹ãƒˆãƒ©ã‚¤ã‚¿ãƒ¼ã€‚</param>
-        public CsvWriter(TextWriter writer)
-            : this( writer, new SimpleFieldFilter() ) {
-        }
-        /// <summary>
-        /// æŒ‡å®šã•ã‚ŒãŸãƒ†ã‚­ã‚¹ãƒˆãƒ©ã‚¤ã‚¿ãƒ¼ã¨ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ãƒ•ã‚£ãƒ«ã‚¿ãƒ¼ã‚’
-        /// ä½¿ç”¨ã—ã¦ CsvWriter ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ§‹ç¯‰ã—ã¾ã™ã€‚
-        /// </summary>
-        /// <param name="writer"></param>
-        /// <param name="filter"></param>
-        public CsvWriter(TextWriter writer, IFieldFilter filter) {
+        /// <param name="writer">‘‚«‚İ‚Ég‚¤ƒeƒLƒXƒgƒ‰ƒCƒ^[B</param>
+        public CsvWriter(TextWriter writer) {
             this.writer_ = writer;
-            this.filter_ = filter;
         }
+        #endregion public-constructors
 
 
         /// <summary>
-        /// 
+        ///   CsvWriter ƒIƒuƒWƒFƒNƒg‚ªƒKƒx[ƒWƒRƒŒƒNƒVƒ‡ƒ“‚É‚æ‚èûW‚³‚ê‚é‘O‚ÉA‚»‚Ì CsvWriter ƒIƒuƒWƒFƒNƒg‚ªƒŠƒ\[ƒX‚ğŠJ•ú‚µA
+        /// ‚»‚Ì‘¼‚ÌƒNƒŠ[ƒ“ƒAƒbƒv‘€ì‚ğÀso—ˆ‚é‚æ‚¤‚É‚µ‚Ü‚·B
         /// </summary>
         ~CsvWriter() {
-            this.Dispose( false );
+            if ( this.IsClosed )
+                this.Dispose( false );
         }
 
 
+        #region public-properties
         /// <summary>
-        /// å†…éƒ¨ãƒ†ã‚­ã‚¹ãƒˆãƒ©ã‚¤ã‚¿ãƒ¼ãŒé–‰ã˜ã‚‰ã‚Œã¦ã„ãŸã‚‰çœŸã‚’è¿”ã—ã¾ã™ã€‚
+        /// “à•”ƒeƒLƒXƒgƒ‰ƒCƒ^[‚ª•Â‚¶‚ç‚ê‚Ä‚¢‚½‚çA^‚ğ•Ô‚µ‚Ü‚·B
         /// </summary>
         public bool IsClosed {
-            get {
-                return this.is_closed_;
-            }
+            get { return this.is_closed_; }
         }
 
 
         /// <summary>
-        /// CSV ãƒ•ã‚¡ã‚¤ãƒ«ã«ãƒ‡ãƒ¼ã‚¿ã‚’æ›¸ãè¾¼ã‚€ã®ã«åˆ©ç”¨ã™ã‚‹ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°ã‚’å–å¾—ã—ã¾ã™ã€‚
+        /// ‰üs‚·‚é‚Æ‚«‚É©“®“I‚Éƒtƒ‰ƒbƒVƒ…‚·‚é‚©‚Ç‚¤‚©‚Ìƒtƒ‰ƒO‚ğæ“¾A‚Ü‚½‚Íİ’è‚µ‚Ü‚·B
+        /// </summary>
+        public bool ImmediateFlush {
+            get { return this.immediate_flush_; }
+            set { this.immediate_flush_ = value; }
+        }
+
+
+        /// <summary>
+        /// CSV ƒtƒ@ƒCƒ‹‚Éƒf[ƒ^‚ğ‘‚«‚Ş‚Ì‚Ég—p‚·‚éƒGƒ“ƒR[ƒfƒBƒ“ƒO‚ğæ“¾‚µ‚Ü‚·B
         /// </summary>
         public Encoding Encoding {
             get {
@@ -125,196 +95,163 @@ namespace Ixion.Utils.Formats.Csv {
 
 
         /// <summary>
-        /// ç¾åœ¨ã®åˆ—ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—ã—ã¾ã™ã€‚
+        ///  Œ»İ‚Ì‘‚«‚±‚à‚¤‚Æ‚µ‚Ä‚¢‚é—ñˆÊ’u‚ğæ“¾‚µ‚Ü‚·B
         /// </summary>
-        /// <field></field>
         public int ColumnIndex {
-            get {
-                return this.column_index_;
-            }
+            get { return this.column_index_; }
         }
 
 
         /// <summary>
-        /// ç¾åœ¨ã®è¡Œã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—ã—ã¾ã™ã€‚
+        ///   Œ»İ‘‚«‚±‚à‚¤‚Æ‚µ‚Ä‚¢‚ésˆÊ’u‚ğæ“¾‚µ‚Ü‚·B
         /// </summary>
         public int RowIndex {
-            get {
-                return this.row_index_;
-            }
+            get { return this.row_index_; }
         }
 
 
         /// <summary>
-        /// æŒ‡å®šã•ã‚ŒãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã¨ã—ã¦æ›¸ãè¾¼ã¿ã¾ã™ã€‚
+        /// ‹æØ‚è•¶š‚ğæ“¾A‚Ü‚½‚Íİ’è‚µ‚Ü‚·B
         /// </summary>
-        /// <param name="field">ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã¨ã—ã¦æ›¸ãè¾¼ã‚€ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã€‚</param>
-        public void Write(object field) {
-            this.Write( field, field.GetType() );
+        public string Separator {
+            get { return this.separator_; }
+            set { this.separator_ = value; }
         }
+
+
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="field"></param>
-        /// <param name="field_type"></param>
-        public void Write(object field, Type field_type) {
-            ShouldBeDisposed();
+        public IFieldFilter Filter {
+            get { return this.filter_; }
+            set { this.filter_ = value; }
+        }
+        #endregion public-properties
 
-            StringBuilder buffer = new StringBuilder();
-            if ( field == null ) {
-                field = string.Empty;
-            }
 
-            if ( this.column_index_ > 0 ) {
-                buffer.Append( "," );
-            }
-            buffer.Append( this.filter_.Format( field, field_type ) );
-            this.writer_.Write( buffer.ToString() );
+        #region public-methods
+        #region IDisposable ƒƒ“ƒo
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose() {
+            this.Dispose( true );
+            GC.SuppressFinalize( this );
+        }
+        #endregion IDisposable ƒƒ“ƒo
 
-            ++this.column_index_;
+
+        /// <summary>
+        /// w’è‚³‚ê‚½’l‚ğƒtƒB[ƒ‹ƒh‚Æ‚µ‚Ä‘‚«‚İ‚Ü‚·B
+        /// </summary>
+        /// <param name="value">‘‚«‚Ş’lB</param>
+        public void Write(object value) {
+            this.ShouldBeDisposed();
+
+            this.InnerWrite( this.Filter.Format( value ) );
         }
         /// <summary>
-        /// æŒ‡å®šã•ã‚ŒãŸæ–‡å­—åˆ—ã‚’ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã¨ã—ã¦æ›¸ãè¾¼ã¿ã¾ã™ã€‚
+        /// w’è‚³‚ê‚½’l‚ğƒtƒB[ƒ‹ƒh‚Æ‚µ‚Ä‘‚«‚İ‚Ü‚·B
         /// </summary>
-        /// <param name="field">æ›¸ãè¾¼ã‚€æ–‡å­—åˆ—ã€‚</param>
-        public void Write(string field) {
-            ShouldBeDisposed();
+        /// <param name="value">‘‚«‚Ş’lB</param>
+        public void Write(string value) {
+            this.ShouldBeDisposed();
 
-            StringBuilder buffer = new StringBuilder();
-            if ( field == null ) {
-                field = string.Empty;
-            }
-
-            if ( this.column_index_ > 0 ) {
-                buffer.Append( "," );
-            }
-            buffer.Append( this.filter_.Format( field ) );
-            this.writer_.Write( buffer.ToString() );
-
-            ++this.column_index_;
+            this.InnerWrite( this.Filter.Format( value ) );
         }
         /// <summary>
-        /// æŒ‡å®šã•ã‚ŒãŸæ–‡å­—åˆ—ã®é…åˆ—ã‚’ 1 ã¤ã®è¡Œã¨ã—ã¦æ›¸ãè¾¼ã¿ã¾ã™ã€‚
+        /// w’è‚³‚ê‚½ƒIƒuƒWƒFƒNƒg”z—ñ‚ğ 1 ‚Â‚Ìs‚Æ‚µ‚Ä‘‚«‚İ‚Ü‚·B
         /// </summary>
-        /// <param name="rows">è¡Œã¨ã—ã¦æ›¸ãè¾¼ã¿ãŸã„æ–‡å­—åˆ—é…åˆ—ã€‚</param>
-        public void Write(string[] rows) {
-            if ( rows == null ) {
-                throw new ArgumentNullException( "rows" );
-            }
-            ShouldBeDisposed();
+        /// <param name="row"></param>
+        public void Write(object[] row) {
+            this.ShouldBeDisposed();
 
-            foreach ( string row in rows ) {
-                this.Write( row, typeof( string ) );
+            if ( row == null )
+                throw new ArgumentNullException( "row" );
+
+            foreach ( string value in row ) {
+                this.InnerWrite( this.Filter.Format( value ) );
             }
             this.WriteLine();
         }
         /// <summary>
-        /// ãƒ‡ãƒ¼ã‚¿ãƒªãƒ¼ãƒ€ãƒ¼ã‚’å—ã‘å–ã‚Šã€ãã®å†…å®¹ã‚’ CSV ãƒ•ã‚¡ã‚¤ãƒ«ã«æ›¸ãå‡ºã—ã¾ã™ã€‚
+        /// 
         /// </summary>
         /// <param name="reader"></param>
         public void Write(DbDataReader reader) {
+            this.ShouldBeDisposed();
+
             if ( reader == null )
                 throw new ArgumentNullException( "reader" );
-            ShouldBeDisposed();
 
-            DataTable schema = reader.GetSchemaTable();
-            foreach ( DataRow row in schema.Rows ) {
-                this.Write( row["ColumnName"], typeof( string ) );
-            }
-            this.WriteLine();
-
-            if ( reader.HasRows ) {
-                while ( reader.Read() ) {
-
-                    for ( int i = 0; i < reader.FieldCount; ++i ) {
-                        Type datatype = schema.Rows[i]["DataType"] as Type;
-
-                        this.Write( reader[i], datatype );
-                    }
-                    this.WriteLine();
-                }
-            }
-            this.Flush();
+            this.Write( reader, true );
         }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="reader"></param>
-        /// <param name="header"></param>
-        public void Write(DbDataReader reader, string[] header) {
+        /// <param name="writing_header"></param>
+        public void Write(DbDataReader reader, bool writing_header) {
+            this.ShouldBeDisposed();
+
             if ( reader == null )
                 throw new ArgumentNullException( "reader" );
-            ShouldBeDisposed();
-            if ( header == null )
-                Write( reader );
 
-            DataTable schema = reader.GetSchemaTable();
-            /*
-             * ãƒ˜ãƒƒãƒ€ãƒ¼ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
-             */
-            foreach ( string field in header ) {
-                this.Write( field );
+            // —ñ‚Ì”B
+            int field_count = reader.FieldCount;
+
+            if ( writing_header ) {
+                // 
+                // ƒwƒbƒ_[‚ğo—Í‚µ‚Ü‚·B
+                // 
+                for ( int i = 0; i < field_count; ++i ) {
+                    // ƒJƒ‰ƒ€–¼B
+                    string column_name = reader.GetName( i );
+
+                    this.InnerWrite( this.Filter.Format( column_name ) );
+                }
+                this.WriteLine();
             }
-            this.WriteLine();
 
+            //
+            // ƒf[ƒ^‚ğ‘‚«‚İ‚Ü‚·B
+            //
             if ( reader.HasRows ) {
                 while ( reader.Read() ) {
-
-                    for ( int i = 0; i < reader.FieldCount; ++i ) {
-                        Type datatype = schema.Rows[i]["DataType"] as Type;
-
-                        this.Write( reader[i], datatype );
+                    // 
+                    // sB
+                    // 
+                    for ( int i = 0; i < field_count; ++i ) {
+                        // 
+                        // —ñB
+                        // 
+                        this.InnerWrite( this.Filter.Format( reader.GetName( i ),
+                                                             reader.GetFieldType(i),
+                                                             reader[i] ) );
                     }
                     this.WriteLine();
                 }
             }
-            this.Flush();
-        }
-        /// <summary>
-        /// æŒ‡å®šã•ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ãƒ†ãƒ¼ãƒ–ãƒ«ã®å†…å®¹ã‚’ CSV ãƒ•ã‚¡ã‚¤ãƒ«ã«æ›¸ãå‡ºã—ã¾ã™ã€‚
-        /// </summary>
-        /// <param name="table"></param>
-        public void Write(DataTable table) {
-            if ( table == null ) {
-                throw new ArgumentNullException( "table" );
-            }
-            ShouldBeDisposed();
-            /*
-             * ãƒ˜ãƒƒãƒ€ãƒ¼ã‚’æ›¸ãè¾¼ã¿ã¾ã™ã€‚
-             */
-            foreach ( DataColumn column in table.Columns ) {
-                this.Write( column.Caption );
-            }
-            this.WriteLine();
-
-            /*
-             * ãƒ‡ãƒ¼ã‚¿ã‚’æ›¸ãè¾¼ã¿ã¾ã™ã€‚
-             */
-            foreach ( DataRow row in table.Rows ) {
-                foreach ( DataColumn column in table.Columns ) {
-                    this.Write( row[column], column.DataType );
-                }
-                this.WriteLine();
-            }
-            this.WriteLine();
-            this.Flush();
         }
 
 
         /// <summary>
-        /// ç¾åœ¨ã®è¡Œã¸ã®æ›¸ãè¾¼ã¿ã‚’çµ‚äº†ã—ã€æ¬¡ã®è¡Œã¸ç§»ã‚Šã¾ã™ã€‚
+        /// Œ»İ‚Ìs‚Ö‚Ì‘‚«‚İ‚ğI—¹‚µAŸ‚Ìs‚ÖˆÚ‚è‚Ü‚·B
         /// </summary>
         public void WriteLine() {
-            ShouldBeDisposed();
+            this.ShouldBeDisposed();
 
             this.column_index_ = 0;
-            this.row_index_ = 0;
+            Interlocked.Increment( ref this.row_index_ );
+
             this.writer_.WriteLine();
+            if ( this.ImmediateFlush )
+                this.Flush();
         }
 
 
         /// <summary>
-        /// ã“ã® CsvWriter ã‚’çµ‚äº†ã—ã€ãƒ¬ã‚·ãƒ¼ãƒãƒ¼ã«é–¢é€£ä»˜ã‘ã‚‰ã‚ŒãŸå…¨ã¦ã®ã‚·ã‚¹ãƒ†ãƒ ãƒªã‚½ãƒ¼ã‚¹ã‚’é–‹æ”¾ã—ã¾ã™ã€‚
+        /// ‚±‚Ì CsvWriter ‚ğI—¹‚µAƒŒƒV[ƒo[‚ÉŠÖ˜A•t‚¯‚ç‚ê‚½‘S‚Ä‚ÌƒVƒXƒeƒ€ƒŠƒ\[ƒX‚ğŠJ•ú‚µ‚Ü‚·B
         /// </summary>
         public void Close() {
             this.Dispose( true );
@@ -322,76 +259,125 @@ namespace Ixion.Utils.Formats.Csv {
 
 
         /// <summary>
-        /// ç¾åœ¨ã®ãƒ©ã‚¤ã‚¿ãƒ¼ã®ãƒãƒƒãƒ•ã‚¡ã‚’ã‚¯ãƒªã‚¢ã—ã€ãƒãƒƒãƒ•ã‚¡å†…ã®ãƒ‡ãƒ¼ã‚¿ã‚’å…ƒã«ãªã‚‹ãƒ‡ãƒã‚¤ã‚¹ã«æ›¸ãè¾¼ã¿ã¾ã™ã€‚
+        /// Œ»İ‚Ì CsvWriter ‚Ìƒoƒbƒtƒ@‚ğƒNƒŠƒA‚µAƒoƒbƒtƒ@“à‚Ìƒf[ƒ^‚ğŒ³‚É‚È‚éƒfƒoƒCƒX‚É‘‚«‚İ‚Ü‚·B
         /// </summary>
         public void Flush() {
-            ShouldBeDisposed();
+            this.ShouldBeDisposed();
 
             this.writer_.Flush();
         }
+        #endregion public-methods
 
 
+        #region protected-methods
         /// <summary>
-        /// æ—¢ã« Close() ãŒå‘¼ã³å‡ºã•ã‚Œã¦ã„ã‚‹æ™‚ã«ã‚·ã‚¹ãƒ†ãƒ ãƒªã‚½ãƒ¼ã‚¹ã‚’ä½¿ç”¨ã—ãŸå‡¦ç†ã‚’å‘¼ã³å‡ºã—ãŸå ´åˆã«
-        /// ObjectDisposedException ã‚’æŠ•ã’ã¾ã™ã€‚
+        /// 
         /// </summary>
-        /// <remarks>å®šå‹å‡¦ç†ã§ã€ã—ã‹ã‚‚ä½•åº¦ã‚‚æ›¸ãå‡¦ç†ãªã®ã§ã€ãƒ¡ã‚½ãƒƒãƒ‰ã«ã—ã¦ã„ã¾ã™ã€‚</remarks>
         protected void ShouldBeDisposed() {
-            if ( this.IsClosed ) {
+            if ( this.IsClosed )
                 throw new ObjectDisposedException( "writer_" );
-            }
         }
 
 
         /// <summary>
-        /// CsvWriter ã§ä½¿ç”¨ã•ã‚Œã¦ã„ã‚‹ã‚¢ãƒ³ãƒãƒãƒ¼ã‚¸ãƒªã‚½ãƒ¼ã‚¹ã‚’é–‹æ”¾ã—ã€ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã§ãƒãƒãƒ¼ã‚¸ãƒªã‚½ãƒ¼ã‚¹ã‚‚é–‹æ”¾ã—ã¾ã™ã€‚
+        /// ƒtƒH[ƒ}ƒbƒg‚³‚ê‚½ƒtƒB[ƒ‹ƒh‚ğ‘‚«‚İ‚Ü‚·B
         /// </summary>
-        /// <param name="disposing">ãƒãƒãƒ¼ã‚¸ãƒªã‚½ãƒ¼ã‚¹ã¨ã‚¢ãƒ³ãƒãƒãƒ¼ã‚¸ãƒªã‚½ãƒ¼ã‚¹ã®ä¸¡æ–¹ã‚’è§£æ”¾ã™ã‚‹å ´åˆã¯çœŸã€‚</param>
-        private void Dispose(bool disposing) {
-            if ( !this.IsClosed ) {
+        /// <param name="field"></param>
+        protected void InnerWrite(string field) {
+            this.ShouldBeDisposed();
 
-                if ( disposing ) {
-                    // disposing ãŒçœŸã®ã¨ãã ã‘ Close() ã‚’å‘¼ã³å‡ºã—ã¾ã™ã€‚
-                    this.writer_.Close();
-                }
-                this.writer_ = null;
+            StringBuilder buffer = new StringBuilder();
+            // field ‚ª null ‚È‚ç‹ó•¶š‚É‚µ‚Ü‚·B
+            if ( field == null )
+                field = string.Empty;
+            // 0 ˆÈã‚Ì—ñˆÊ’u‚Ì‚Æ‚«‚Íæ‚ÉƒZƒpƒŒ[ƒ^[(‹æØ‚è•¶š)‚ğ•t‚¯‘«‚µ‚Ü‚·B
+            if ( this.ColumnIndex > 0 )
+                buffer.Append( this.Separator );
 
-                this.is_closed_ = true;
-            }
+            buffer.Append( field );
+
+            this.writer_.Write( buffer.ToString() );
+            Interlocked.Increment( ref this.column_index_ );
         }
 
 
-        #region IDisposable ãƒ¡ãƒ³ãƒ
         /// <summary>
-        /// ã‚¢ãƒ³ãƒãƒãƒ¼ã‚¸ ãƒªã‚½ãƒ¼ã‚¹ã®è§£æ”¾ãŠã‚ˆã³ãƒªã‚»ãƒƒãƒˆã«é–¢é€£ä»˜ã‘ã‚‰ã‚Œã¦ã„ã‚‹ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³å®šç¾©ã®ã‚¿ã‚¹ã‚¯ã‚’å®Ÿè¡Œã—ã¾ã™ã€‚
+        /// CsvWriter ‚Åg—p‚³‚ê‚Ä‚¢‚éƒAƒ“ƒ}ƒl[ƒWƒŠƒ\[ƒX‚ğŠJ•ú‚µAƒIƒvƒVƒ‡ƒ“‚Åƒ}ƒl[ƒWƒŠƒ\[ƒX‚àŠJ•ú‚µ‚Ü‚·B
         /// </summary>
-        void IDisposable.Dispose() {
-            this.Dispose( true );
-            GC.SuppressFinalize( this );
+        /// <param name="disposing">ƒ}ƒl[ƒWƒŠƒ\[ƒX‚ÆƒAƒ“ƒ}ƒl[ƒWƒŠƒ\[ƒX‚Ì—¼•û‚ğ‰ğ•ú‚·‚éê‡‚Í^B</param>
+        protected void Dispose(bool disposing) {
+            this.ShouldBeDisposed();
+
+            if ( disposing ) {
+                this.writer_.Close();
+            }
+            this.writer_ = null;
+            this.is_closed_ = true;
         }
-        #endregion
+        #endregion protected-methods
+
+
+        #region protected-static-methods
+        /// <summary>
+        /// w’è‚³‚ê‚½ƒpƒX‚©‚çƒtƒ@ƒCƒ‹ƒXƒgƒŠ[ƒ€‚ğì¬‚µ‚Ä•Ô‚µ‚Ü‚·B
+        /// </summary>
+        /// <param name="path">ŠJ‚«‚½‚¢ƒtƒ@ƒCƒ‹‚ÌƒpƒXB</param>
+        /// <returns>‘‚«‚İƒtƒ@ƒCƒ‹ƒXƒgƒŠ[ƒ€B</returns>
+        protected static FileStream CreateFileStream(string path) {
+            return File.Open( path, FileMode.Create, FileAccess.Write, FileShare.Read );
+        }
 
 
         /// <summary>
-        /// å†…éƒ¨ãƒ†ã‚­ã‚¹ãƒˆãƒ©ã‚¤ã‚¿ãƒ¼ã§ã™ã€‚
+        /// 
+        /// </summary>
+        /// <param name="output_stream"></param>
+        /// <returns></returns>
+        protected static TextWriter CreateStreamWriter(Stream output_stream) {
+            return CreateStreamWriter( output_stream, Encoding.Default );
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="output_stream"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        protected static TextWriter CreateStreamWriter(Stream output_stream, Encoding encoding) {
+            return new StreamWriter( output_stream, encoding );
+        }
+        #endregion protected-static-methods
+
+
+        #region private-fields
+        /// <summary>
+        /// “à•”ƒeƒLƒXƒgƒ‰ƒCƒ^[‚Å‚·B
         /// </summary>
         private TextWriter writer_;
         /// <summary>
-        /// å†…éƒ¨ãƒ†ã‚­ã‚¹ãƒˆãƒ©ã‚¤ã‚¿ãƒ¼ãŒé–‰ã˜ã‚‰ã‚ŒãŸã‹ã©ã†ã‹ã‚’è¡¨ã™ãƒ•ãƒ©ã‚°ã§ã™ã€‚
+        /// ‰üs‚·‚é‚Æ‚«‚É©“®“I‚Éƒtƒ‰ƒbƒVƒ…‚·‚é‚©‚Ç‚¤‚©‚ğ•\‚µ‚Ü‚·B
+        /// </summary>
+        private bool immediate_flush_ = false;
+        /// <summary>
+        /// “à•”ƒeƒLƒXƒgƒ‰ƒCƒ^[‚ª•Â‚¶‚ç‚ê‚½‚©‚Ç‚¤‚©‚ğ•\‚·ƒtƒ‰ƒO‚Å‚·B
         /// </summary>
         private bool is_closed_ = false;
         /// <summary>
-        /// ç¾åœ¨ã®åˆ—ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’è¡¨ã—ã¾ã™ã€‚
+        /// Œ»İ‘‚«‚±‚à‚¤‚Æ‚µ‚Ä‚¢‚é—ñ‚ÌˆÊ’u‚ğ•\‚µ‚Ü‚·B
         /// </summary>
         private int column_index_ = 0;
         /// <summary>
-        /// ç¾åœ¨ã®è¡Œã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’è¡¨ã—ã¾ã™ã€‚
+        /// Œ»İ‘‚«‚±‚à‚¤‚Æ‚µ‚Ä‚¢‚és‚ÌˆÊ’u‚ğ•\‚µ‚Ü‚·B
         /// </summary>
         private int row_index_ = 0;
         /// <summary>
-        /// æ›¸ãè¾¼ã‚€ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰å€¤ã‚’ãƒ•ã‚£ãƒ«ã‚¿ãƒªãƒ³ã‚°ã—ã¾ã™ã€‚
+        /// ƒtƒB[ƒ‹ƒh‚ÆƒtƒB[ƒ‹ƒh‚Ì‹æØ‚è‚ğ•\‚·•¶š‚Å‚·B
         /// </summary>
-        private IFieldFilter filter_ = null;
+        private string separator_ = ",";
+        /// <summary>
+        /// 
+        /// </summary>
+        private IFieldFilter filter_ = new NilFieldFilter();
+        #endregion private-fields
     }
 
 

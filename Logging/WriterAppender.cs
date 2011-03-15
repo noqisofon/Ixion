@@ -1,4 +1,4 @@
-/* -*- encoding: utf-8 -*- */
+﻿/* -*- encoding: utf-8 -*- */
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,6 +8,7 @@ using System.IO;
 namespace Ixion.Logging {
 
 
+    using Ixion.Logging.Helper;
     using Ixion.Logging.Spi;
 
 
@@ -69,8 +70,8 @@ namespace Ixion.Logging {
         /// 
         /// </summary>
         /// <returns></returns>
-        public override bool RequiresLayout() {
-            return false;
+        public override bool RequiresLayout {
+            get { return true; }
         }
 
 
@@ -80,7 +81,59 @@ namespace Ixion.Logging {
         /// </summary>
         /// <param name="log_event"></param>
         protected override void Append(LoggingEvent log_event) {
-            this.writer_.Write( this.layout_.Format( log_event ) );
+            this.WriteHeader();
+            this.writer_.Write( base.Layout.Format( log_event ) );
+            this.WriteFooter();
+
+            if ( this.ImmediateFlush )
+                this.writer_.Flush();
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected void WriteHeader() {
+            this.writer_.Write( base.Layout.Header );
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected void WriteFooter() {
+            this.writer_.Write( base.Layout.Footer );
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected virtual void Reset() {
+            this.writer_ = null;
+            base.closed = true;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="writer"></param>
+        protected void SetWriter(TextWriter writer) {
+            this.Reset();
+
+            this.writer_ = writer;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected virtual void CloseWriter() {
+            if ( !base.closed ) {
+                this.writer_.Close();
+                base.closed = true;
+            }
         }
 
 
@@ -89,13 +142,11 @@ namespace Ixion.Logging {
         /// </summary>
         /// <param name="dispoing"></param>
         protected override void Dispose(bool dispoing) {
-            if ( !base.closed ) {
-                if ( dispoing ) {
-                    this.writer_.Close();
-                }
-                this.writer_ = null;
-                base.closed = true;
-            }
+            if ( dispoing )
+                this.CloseWriter();
+
+            this.Reset();
+
         }
         #endregion
 
@@ -105,7 +156,7 @@ namespace Ixion.Logging {
         ///// </summary>
         //private Encoding encoding_;
         /// <summary>
-        /// 
+        /// 毎回 Append() 後にフラッシュするかどうかを表します。
         /// </summary>
         private bool immediate_flush_;
         /// <summary>

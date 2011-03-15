@@ -67,7 +67,7 @@ namespace Ixion.Logging {
         /// <summary>
         /// 
         /// </summary>
-        bool RequiresLayout();
+        bool RequiresLayout { get;}
     }
 
 

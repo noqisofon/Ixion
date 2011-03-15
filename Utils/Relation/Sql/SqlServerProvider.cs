@@ -67,6 +67,8 @@ namespace Ixion.Utils.Relation.Sql {
             connection_text_builder.DataSource = base.DataSource;
             connection_text_builder.IntegratedSecurity = true;
 
+            connection_text_builder.ConnectTimeout = base.Timeout;
+
             return new SqlConnection( connection_text_builder.ToString() );
         }
         /// <summary>
@@ -81,6 +83,8 @@ namespace Ixion.Utils.Relation.Sql {
             connection_text_builder.InitialCatalog = base.InitialCatalog;
             connection_text_builder.DataSource = base.DataSource;
             connection_text_builder.IntegratedSecurity = false;
+
+            connection_text_builder.ConnectTimeout = base.Timeout;
 
             connection_text_builder.UserID = acount_name;
             connection_text_builder.Password = password;

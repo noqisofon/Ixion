@@ -33,6 +33,7 @@ namespace Ixion.Utils.Relation.Common {
         public DatabaseProvider(string initial_catalog, string data_source) {
             this.DataSource = data_source;
             this.InitialCatalog = initial_catalog;
+            this.Timeout = 30;
         }
 
 
@@ -51,6 +52,15 @@ namespace Ixion.Utils.Relation.Common {
         public string InitialCatalog {
             get { return this.initial_catalog_; }
             set { this.initial_catalog_ = value; }
+        }
+
+
+        /// <summary>
+        /// データベースへ接続するときのタイムアウトを取得したり設定したりします。
+        /// </summary>
+        public int Timeout {
+            get { return this.timeout_; }
+            set { this.timeout_ = value; }
         }
 
 
@@ -91,6 +101,10 @@ namespace Ixion.Utils.Relation.Common {
         /// 接続するデータベース名を表します。
         /// </summary>
         private string initial_catalog_;
+        /// <summary>
+        /// 
+        /// </summary>
+        private int timeout_;
     }
 
 

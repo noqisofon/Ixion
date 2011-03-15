@@ -1,6 +1,6 @@
 /* -*- encoding: utf-8; -*- */
 using System;
-using System.Text;
+using System.IO;
 
 
 namespace Ixion.Logging.Helper {
@@ -29,18 +29,32 @@ namespace Ixion.Logging.Helper {
         /// <summary>
         /// 指定された変換方法でフォーマットするためのテンプレートメソッドです。
         /// </summary>
-        /// <param name="sbuilder"></param>
+        /// <param name="writer"></param>
         /// <param name="log_event"></param>
-        public void Format(StringBuilder sbuilder, LoggingEvent log_event) {
+        public void Format(TextWriter writer, LoggingEvent log_event) {
+            writer.Write( convert( log_event ) );
         }
 
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="sbuilder"></param>
-        /// <param name="k"></param>
-        public void SpacePad(StringBuilder sbuilder, int k) {
+        /// <param name="writer"></param>
+        /// <param name="n"></param>
+        public virtual void SpacePad(TextWriter writer, int n) {
+            writer.Write( "    " );
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="other_next"></param>
+        /// <returns></returns>
+        public PatternConvertor SetNext(PatternConvertor other_next) {
+            this.next_ = other_next;
+
+            return this.next_;
         }
 
 
