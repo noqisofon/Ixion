@@ -36,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleAppender.cs" />
+    <Compile Include="FileAppender.cs" />
     <Compile Include="Helper\FormattingInfo.cs" />
     <Compile Include="Helper\PatternConvertor.cs" />
     <Compile Include="Helper\PatternParser.cs" />
@@ -63,7 +64,7 @@
     <Compile Include="Spi\LoggingEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Spi\IOptionHandler.cs" />
-    <Compile Include="WriterAppender.cs" />
+    <Compile Include="TextWriterAppender.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

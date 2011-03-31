@@ -39,27 +39,27 @@ namespace Ixion.Utils.Relation.Sql {
 
 
         /// <summary>
-        /// 
+        /// SqlServer への接続オブジェクトを作成して返します。
         /// </summary>
-        /// <returns></returns>
+        /// <returns>新しい接続オブジェクト。</returns>
         new public SqlConnection GetConnection() {
             return (SqlConnection)GetDbConnection();
         }
         /// <summary>
-        /// 
+        /// アカウント名とパスワードを指定して SqlServer への接続オブジェクトを作成して返します。
         /// </summary>
-        /// <param name="acount_name"></param>
-        /// <param name="password"></param>
-        /// <returns></returns>
+        /// <param name="acount_name">接続時に使用するユーザー ID。</param>
+        /// <param name="password">ユーザー ID のパスワード。</param>
+        /// <returns>新しい接続オブジェクト。</returns>
         new public SqlConnection GetConnection(string acount_name, string password) {
             return (SqlConnection)GetDbConnection( acount_name, password );
         }
 
 
         /// <summary>
-        /// SqlServer への接続オブジェクトを作成して返します。
+        /// 
         /// </summary>
-        /// <returns>新しい接続オブジェクト。</returns>
+        /// <returns></returns>
         protected override DbConnection GetDbConnection() {
             SqlConnectionStringBuilder connection_text_builder = new SqlConnectionStringBuilder();
 
@@ -72,11 +72,11 @@ namespace Ixion.Utils.Relation.Sql {
             return new SqlConnection( connection_text_builder.ToString() );
         }
         /// <summary>
-        /// アカウント名とパスワードを指定して SqlServer への接続オブジェクトを作成して返します。
+        /// 
         /// </summary>
-        /// <param name="acount_name">接続時に使用するユーザー ID。</param>
-        /// <param name="password">ユーザー ID のパスワード。</param>
-        /// <returns>新しい接続オブジェクト。</returns>
+        /// <param name="acount_name"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         protected override DbConnection GetDbConnection(string acount_name, string password) {
             SqlConnectionStringBuilder connection_text_builder = new SqlConnectionStringBuilder();
 

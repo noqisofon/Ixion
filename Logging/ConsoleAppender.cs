@@ -10,7 +10,7 @@ namespace Ixion.Logging {
     /// <summary>
     ///
     /// </summary>
-    public class ConsoleAppender : WriterAppender {
+    public class ConsoleAppender : TextWriterAppender {
         /// <summary>
         /// 
         /// </summary>
@@ -23,6 +23,7 @@ namespace Ixion.Logging {
         /// <param name="layout"></param>
         public ConsoleAppender(Layout layout)
             : base( layout, Console.OpenStandardError() ) {
+            this.ImmediateFlush = true;
         }
     }
 
