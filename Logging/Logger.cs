@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Reflection;
 
 
 namespace Ixion.Logging {
@@ -418,6 +419,14 @@ namespace Ixion.Logging {
         /// <returns></returns>
         public static Logger GetLogger(Type type) {
             return new Logger( type.Name );
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="assembly"></param>
+        /// <returns></returns>
+        public static Logger GetLogger(Assembly assembly) {
+            return new Logger();
         }
         /// <summary>
         /// 

@@ -35,6 +35,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Etherial\Mail\PopClient.cs" />
+    <Compile Include="Etherial\Mail\PopClientException.cs" />
     <Compile Include="Formats\AbstractFieldFilter.cs" />
     <Compile Include="Formats\Csv\CsvWriter.cs" />
     <Compile Include="Formats\IFieldFilter.cs" />
@@ -43,6 +45,9 @@
     <Compile Include="Formats\SimpleFieldFilter.cs" />
     <Compile Include="Relation\Common\DatabaseProvider.cs" />
     <Compile Include="Relation\Sql\SqlServerProvider.cs" />
+    <Compile Include="Std\Io\PrintFormatConvertor.cs" />
+    <Compile Include="Std\Io\PrintFormatParser.cs" />
+    <Compile Include="Std\Io\PrintFormatSpecify.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
