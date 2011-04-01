@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 
 namespace Ixion.Etherial.Mail {
@@ -160,11 +161,7 @@ namespace Ixion.Etherial.Mail {
         protected void Dispose(bool disposing) {
             this.ShouldBeDisposed();
 
-            this.SendLine( "QUIT" );
-            string line = this.ReadLine();
-
-            if ( !line.ToUpper().StartsWith( "+OK" ) )
-                throw new PopClientException( string.Format( "QUIT 送信時に POP サーバーが \"{0}\" を返しました。", line ) );
+            this.InnerQuit();
 
             if ( disposing ) {
                 this.reader_.Close();
@@ -189,9 +186,48 @@ namespace Ixion.Etherial.Mail {
         /// <summary>
         /// 
         /// </summary>
+        private void InnerQuit() {
+            this.SendLine( "QUIT" );
+            string line = this.ReadLine();
+
+            if ( !line.ToUpper().StartsWith( "+OK" ) )
+                throw new PopClientException( string.Format( "QUIT 送信時に POP サーバーが \"{0}\" を返しました。", line ) );
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <returns></returns>
         private string ReadLine() {
-            return string.Empty;
+            this.ShouldBeDisposed();
+
+            byte[] temp_bytes = new byte[8096];
+            int amount_of_bytes_read = 0;
+            TimeSpan timeout = TimeSpan.FromMilliseconds( 100 );
+
+            int output_trial_count = 0;
+
+            ManualResetEvent readed = new ManualResetEvent( false );
+            bool signal_captured = false;
+            IAsyncResult byte_reading = this.reader_.BaseStream.BeginRead( 
+                temp_bytes,
+                0,
+                temp_bytes.Length,
+                delegate(IAsyncResult ar) { ( (ManualResetEvent)ar.AsyncState ).Set(); },
+                readed );
+            do {
+                if ( output_trial_count >= 32 )
+                    throw new PopClientException( "読み込み時にタイムアウトしました。" );
+
+                ++output_trial_count;
+            } while ( signal_captured = readed.WaitOne( timeout ) );
+            amount_of_bytes_read = this.reader_.BaseStream.EndRead( byte_reading );
+
+            string response = this.reader_.CurrentEncoding.GetString( temp_bytes, 0, amount_of_bytes_read );
+            int newline_index = response.IndexOf( Environment.NewLine );
+
+            return newline_index != -1 ? response.Substring( 0, newline_index ) : response;
         }
 
 
@@ -200,6 +236,29 @@ namespace Ixion.Etherial.Mail {
         /// </summary>
         /// <param name="line"></param>
         private void SendLine(string line) {
+            this.ShouldBeDisposed();
+
+            int input_trial_count = 0;
+            byte[] sent_bytes = this.reader_.CurrentEncoding.GetBytes( line );
+
+            TimeSpan timeout = TimeSpan.FromMilliseconds( 100 );
+            ManualResetEvent wrote = new ManualResetEvent( false );
+
+            bool signal_captured = false;
+            IAsyncResult byte_writing = this.reader_.BaseStream.BeginWrite( 
+                sent_bytes,
+                0,
+                sent_bytes.Length,
+                delegate(IAsyncResult ar) { ( (ManualResetEvent)ar.AsyncState ).Set(); },
+                wrote );
+            do {
+                if ( input_trial_count >= 32 )
+                    throw new PopClientException( "書き込み時にタイムアウトしました。" );
+
+                ++input_trial_count;
+            } while ( signal_captured = wrote.WaitOne( timeout ) );
+
+            this.reader_.BaseStream.EndWrite( byte_writing );
         }
 
 
