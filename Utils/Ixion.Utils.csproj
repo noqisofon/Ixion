@@ -37,6 +37,7 @@
   <ItemGroup>
     <Compile Include="Etherial\Mail\PopClient.cs" />
     <Compile Include="Etherial\Mail\PopClientException.cs" />
+    <Compile Include="Etherial\NetworkStreamReader.cs" />
     <Compile Include="Etherial\NetworkStreamWriter.cs" />
     <Compile Include="Formats\AbstractFieldFilter.cs" />
     <Compile Include="Formats\Csv\CsvWriter.cs" />

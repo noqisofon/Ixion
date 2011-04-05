@@ -91,6 +91,9 @@ namespace Ixion.Etherial {
         public NetworkStreamWriter(TcpClient client, Encoding encoding, int buffer_size) {
             if ( client == null )
                 throw new ArgumentNullException( "client" );
+            NetworkStream stream = client.GetStream();
+            if ( !stream.CanWrite )
+                throw new ArgumentException( "指定されたストリームは書き込み処理をサポートしていません。" );
             if ( encoding == null )
                 throw new ArgumentNullException( "encoding" );
             if ( buffer_size <= 0 )
@@ -99,7 +102,7 @@ namespace Ixion.Etherial {
             if ( buffer_size < MINIMUM_BUFFER_SIZE )
                 buffer_size = MINIMUM_BUFFER_SIZE;
 
-            this.base_stream_ = client.GetStream();
+            this.base_stream_ = stream;
             this.encoding_ = encoding;
             this.encoder_ = encoding.GetEncoder();
             this.buffer_size_ = buffer_size;
@@ -215,7 +218,7 @@ namespace Ixion.Etherial {
             if ( this.base_stream_ == null )
                 throw new ObjectDisposedException( "base_stream_" );
 
-            this.input_buffer_[this.input_buffer_length_ ++] = value;
+            this.input_buffer_[this.input_buffer_length_++] = value;
             if ( this.input_buffer_length_ >= this.buffer_size_ )
                 this.InnerEncode( false );
 

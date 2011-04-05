@@ -27,7 +27,7 @@ namespace Ixion.Utils.Formats.Csv {
         /// <param name="path">書き出す CSV ファイルのパス。</param>
         /// <param name="fileEncoding">書き込むエンコーディング。</param>
         public CsvWriter(string path, Encoding fileEncoding)
-            : this( CreateFileStream( path ), Encoding.Default ) {
+            : this( CreateStreamWriter( CreateFileStream( path ), Encoding.Default ) ) {
         }
         /// <summary>
         /// ストリームを指定して CsvWriter オブジェクトを作成します。
@@ -226,7 +226,7 @@ namespace Ixion.Utils.Formats.Csv {
                         // 列。
                         // 
                         this.InnerWrite( this.Filter.Format( reader.GetName( i ),
-                                                             reader.GetFieldType(i),
+                                                             reader.GetFieldType( i ),
                                                              reader[i] ) );
                     }
                     this.WriteLine();
