@@ -11,8 +11,14 @@ namespace Ixion.Etherial {
 
 
     /// <summary>
-    /// 
+    /// NetworkStream 用の TextWriter です。
     /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   Write メソッドで書き込んだバイト列は一旦メモリーストリームに書きこまれ、
+    ///   Flush メソッドでネットワークストリームに書きこまれます。
+    ///   </para>
+    /// </remarks>
     public class NetworkStreamWriter : TextWriter {
         /// <summary>
         /// 
@@ -55,18 +61,56 @@ namespace Ixion.Etherial {
             this.input_buffer_ = new char[buffer_size];
             this.input_buffer_length_ = 0;
             //this.output_buffer_ = new byte[encoding.GetMaxByteCount( buffer_size )];
-            this.temporary_stream_ = new MemoryStream();
-            this.auto_flush_ = false;
+            this.output_stream_ = new MemoryStream();
+            this.immediate_flush_ = false;
             this.stream_owner_ = false;
 
-            WritePreamble();
+            this.WritePreamble();
         }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="client"></param>
         public NetworkStreamWriter(TcpClient client)
-            : this( client.GetStream() ) {
+            : this( client, new UTF8Encoding( false, true ), STREAM_BUFFER_SIZE ) {
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="encoding"></param>
+        public NetworkStreamWriter(TcpClient client, Encoding encoding)
+            : this( client, encoding, STREAM_BUFFER_SIZE ) {
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="encoding"></param>
+        /// <param name="buffer_size"></param>
+        public NetworkStreamWriter(TcpClient client, Encoding encoding, int buffer_size) {
+            if ( client == null )
+                throw new ArgumentNullException( "client" );
+            if ( encoding == null )
+                throw new ArgumentNullException( "encoding" );
+            if ( buffer_size <= 0 )
+                throw new ArgumentOutOfRangeException( "buffer_size" );
+
+            if ( buffer_size < MINIMUM_BUFFER_SIZE )
+                buffer_size = MINIMUM_BUFFER_SIZE;
+
+            this.base_stream_ = client.GetStream();
+            this.encoding_ = encoding;
+            this.encoder_ = encoding.GetEncoder();
+            this.buffer_size_ = buffer_size;
+            this.input_buffer_ = new char[buffer_size];
+            this.input_buffer_length_ = 0;
+            //this.output_buffer_ = new byte[encoding.GetMaxByteCount( buffer_size )];
+            this.output_stream_ = new MemoryStream();
+            this.immediate_flush_ = false;
+            this.stream_owner_ = true;
+
+            this.WritePreamble();
         }
 
 
@@ -75,6 +119,23 @@ namespace Ixion.Etherial {
         /// </summary>
         ~NetworkStreamWriter() {
             this.Dispose( false );
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual bool ImmediateFlush {
+            get { return this.immediate_flush_; }
+            set { this.immediate_flush_ = value; }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual Stream BaseStream {
+            get { return this.base_stream_; }
         }
 
 
@@ -94,8 +155,23 @@ namespace Ixion.Etherial {
                 throw new ObjectDisposedException( "base_stream_" );
 
             this.InnerEncode( false );
-            byte[] output_buffer = this.temporary_stream_.ToArray();
+            byte[] output_buffer = this.output_stream_.ToArray();
+            this.output_stream_.Position = 0;
             this.ForcedWrite( output_buffer, 0, output_buffer.Length );
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void Close() {
+            if ( this.base_stream_ != null ) {
+                this.InnerEncode( true );
+                this.Flush();
+                this.base_stream_.Close();
+                this.base_stream_ = null;
+            }
+            this.Dispose( true );
         }
 
 
@@ -128,8 +204,74 @@ namespace Ixion.Etherial {
                     this.InnerEncode( false );
             }
 
-            if ( this.auto_flush_ )
+            if ( this.ImmediateFlush )
                 this.Flush();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        public override void Write(char value) {
+            if ( this.base_stream_ == null )
+                throw new ObjectDisposedException( "base_stream_" );
+
+            this.input_buffer_[this.input_buffer_length_ ++] = value;
+            if ( this.input_buffer_length_ >= this.buffer_size_ )
+                this.InnerEncode( false );
+
+            if ( this.ImmediateFlush ) {
+                this.InnerEncode( false );
+                this.Flush();
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="buffer"></param>
+        public override void Write(char[] buffer) {
+            if ( buffer == null )
+                throw new ArgumentNullException( "buffer" );
+
+            this.Write( buffer, 0, buffer.Length );
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="index"></param>
+        /// <param name="count"></param>
+        public override void Write(char[] buffer, int index, int count) {
+            if ( this.base_stream_ == null )
+                throw new ObjectDisposedException( "base_stream_" );
+            if ( buffer == null )
+                throw new ArgumentNullException( "buffer" );
+            if ( index < 0 )
+                throw new ArgumentOutOfRangeException( "index" );
+            if ( count < 0 )
+                throw new ArgumentOutOfRangeException( "count" );
+            if ( ( buffer.Length - index ) < count )
+                throw new ArgumentException( "count が buffer の範囲を超えています。" );
+
+            int temp;
+            while ( count > 0 ) {
+                temp = this.buffer_size_ - this.input_buffer_length_;
+                if ( temp > count )
+                    temp = count;
+
+                Array.Copy( buffer, index, this.input_buffer_, this.input_buffer_length_, temp );
+                index += temp;
+                count -= temp;
+                this.input_buffer_length_ += temp;
+                if ( this.input_buffer_length_ >= this.buffer_size_ )
+                    this.InnerEncode( false );
+            }
+            if ( this.ImmediateFlush ) {
+                this.InnerEncode( false );
+
+                if ( this.base_stream_ == null )
+                    throw new ObjectDisposedException( "base_stream_" );
+                this.Flush();
+            }
         }
 
 
@@ -148,10 +290,21 @@ namespace Ixion.Etherial {
             }
             this.input_buffer_ = null;
             this.input_buffer_length_ = 0;
-            this.temporary_stream_.Close();
+            this.output_stream_.Close();
             this.buffer_size_ = 0;
 
             base.Dispose( disposing );
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void WritePreamble() {
+            byte[] preamble = this.encoding_.GetPreamble();
+
+            if ( preamble != null )
+                this.ForcedWrite( preamble, 0, preamble.Length );
         }
 
 
@@ -169,21 +322,10 @@ namespace Ixion.Etherial {
                                                   0,
                                                   flush );
                 if ( len > 0 )
-                    this.temporary_stream_.Write( output_buffer, 0, len );
+                    this.output_stream_.Write( output_buffer, 0, len );
 
                 this.input_buffer_length_ = 0;
             }
-        }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private void WritePreamble() {
-            byte[] preamble = this.encoding_.GetPreamble();
-
-            if ( preamble != null )
-                this.base_stream_.Write( preamble, 0, preamble.Length );
         }
 
 
@@ -251,11 +393,11 @@ namespace Ixion.Etherial {
         /// <summary>
         /// 
         /// </summary>
-        private MemoryStream temporary_stream_;
+        private MemoryStream output_stream_;
         /// <summary>
         /// 
         /// </summary>
-        private bool auto_flush_;
+        private bool immediate_flush_;
         /// <summary>
         /// 
         /// </summary>

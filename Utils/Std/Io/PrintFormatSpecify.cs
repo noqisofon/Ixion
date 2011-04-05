@@ -1,7 +1,7 @@
 using System;
 
 
-namespace Ixion.Std.IO {
+namespace Ixion.Std.Io {
 
 
     /// <summary>

@@ -46,6 +46,10 @@
     <Compile Include="Formats\SimpleFieldFilter.cs" />
     <Compile Include="Relation\Common\DatabaseProvider.cs" />
     <Compile Include="Relation\Sql\SqlServerProvider.cs" />
+    <Compile Include="Std\Io\Closeable.cs" />
+    <Compile Include="Std\Io\Flushable.cs" />
+    <Compile Include="Std\Io\InputStream.cs" />
+    <Compile Include="Std\Io\OutputStream.cs" />
     <Compile Include="Std\Io\PrintFormatConvertor.cs" />
     <Compile Include="Std\Io\PrintFormatParser.cs" />
     <Compile Include="Std\Io\PrintFormatSpecify.cs" />

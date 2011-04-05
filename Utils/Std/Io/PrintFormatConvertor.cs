@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace Ixion.Std.IO {
+namespace Ixion.Std.Io {
 
 
     /// <summary>
