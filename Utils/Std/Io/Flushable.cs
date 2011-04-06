@@ -2,7 +2,7 @@
 using System;
 
 
-namespace Ixion.Std.Io {
+namespace Std.Io {
     
     
     /// <summary>

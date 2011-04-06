@@ -47,6 +47,8 @@
     <Compile Include="Formats\SimpleFieldFilter.cs" />
     <Compile Include="Relation\Common\DatabaseProvider.cs" />
     <Compile Include="Relation\Sql\SqlServerProvider.cs" />
+    <Compile Include="Std\Io\ByteArrayInputStream.cs" />
+    <Compile Include="Std\Io\ByteArrayOutputStream.cs" />
     <Compile Include="Std\Io\Closeable.cs" />
     <Compile Include="Std\Io\Flushable.cs" />
     <Compile Include="Std\Io\InputStream.cs" />

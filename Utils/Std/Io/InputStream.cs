@@ -1,7 +1,8 @@
 /* -*- encoding: utf-8; -*- */
+using System;
 
 
-namespace Ixion.Std.Io {
+namespace Std.Io {
 
 
     /// <summary>
@@ -50,6 +51,7 @@ namespace Ixion.Std.Io {
         /// <summary>
         /// 入力ストリームからデータの次のバイトを読み込みます。
         /// </summary>
+        /// <exception cref="IOException"></exception>
         /// <returns></returns>
         public abstract int Read();
         /// <summary>
@@ -68,6 +70,15 @@ namespace Ixion.Std.Io {
         /// <param name="len"></param>
         /// <returns></returns>
         public virtual int Read(byte[] buffer, int offset, int len) {
+            if ( buffer == null )
+                throw new ArgumentNullException( "buffer" );
+            if ( offset < 0 )
+                throw new ArgumentOutOfRangeException( "offset" );
+            if ( len < 0 )
+                throw new ArgumentOutOfRangeException( "len" );
+            if ( buffer.Length < ( len - offset ) )
+                throw new ArgumentException( "指定されたバイト列の長さより長いバイト列を読み込もうとしました。" );
+            
             int stop = len - offset;
             int result = 0;
 
@@ -96,7 +107,7 @@ namespace Ixion.Std.Io {
         /// <param name="n"></param>
         /// <returns></returns>
         public virtual long Skip(long n) {
-            return n;
+            return -1;
         }
 
     }

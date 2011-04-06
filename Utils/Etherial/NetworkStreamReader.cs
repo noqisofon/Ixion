@@ -1,12 +1,13 @@
 /* -*- encoding: utf-8; -*- */
 using System;
 using System.IO;
-using System.Text;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
+using System.Threading;
 
 
-namespace Ixion.Utils.Etherial {
+namespace Ixion.Etherial {
 
 
     /// <summary>
@@ -68,15 +69,15 @@ namespace Ixion.Utils.Etherial {
             this.base_stream_ = stream;
             this.encoding_ = encoding;
             this.buffer_size_ = buffer_size;
-            
+
             this.input_buffer_ = new byte[buffer_size];
             this.input_buffer_position_ = 0;
             this.input_buffer_length_ = 0;
-            
+
             this.output_buffer_ = new char[buffer_size];
             this.output_buffer_position_ = 0;
             this.output_buffer_length_ = 0;
-            
+
             this.saw_eof_ = false;
             this.stream_owner_ = false;
             this.encoding_detected_ = detect_encoding_from_byteorder_marks;
@@ -131,15 +132,15 @@ namespace Ixion.Utils.Etherial {
             this.base_stream_ = stream;
             this.encoding_ = encoding;
             this.buffer_size_ = buffer_size;
-            
+
             this.input_buffer_ = new byte[buffer_size];
             this.input_buffer_position_ = 0;
             this.input_buffer_length_ = 0;
-            
+
             this.output_buffer_ = new char[buffer_size];
             this.output_buffer_position_ = 0;
             this.output_buffer_length_ = 0;
-            
+
             this.saw_eof_ = false;
             this.stream_owner_ = true;
             this.encoding_detected_ = detect_encoding_from_byteorder_marks;
@@ -424,9 +425,27 @@ namespace Ixion.Utils.Etherial {
                         if ( this.base_stream_ == null )
                             throw new IOException( "ベースストリームが既に閉じています。" );
 
+                        //ManualResetEvent readed = new ManualResetEvent( false );
+                        //IAsyncResult byte_reading = this.base_stream_.BeginRead( this.input_buffer_,
+                        //                                                         this.input_buffer_length_,
+                        //                                                         this.buffer_size_ - this.input_buffer_length_,
+                        //                                                         null,
+                        //                                                         null );
+                        //int trial_count = 0;
+                        //do {
+                        //    if ( trial_count >= 32 )
+                        //        throw new IOException( "タイムアウトしました。" );
+
+                        //    if ( byte_reading.AsyncWaitHandle.WaitOne( TimeSpan.FromMilliseconds( 300 ) ) )
+                        //        break;
+
+                        //    ++trial_count;
+                        //} while ( !byte_reading.IsCompleted );
+                        //len = this.base_stream_.EndRead( byte_reading );
                         len = this.base_stream_.Read( this.input_buffer_,
                                                       this.input_buffer_length_,
                                                       this.buffer_size_ - this.input_buffer_length_ );
+
                         if ( len <= 0 ) {
                             if ( this.encoding_detected_ ) {
                                 this.input_buffer_length_ = 0;
@@ -462,9 +481,16 @@ namespace Ixion.Utils.Etherial {
                 this.output_buffer_length_ = output_len;
 
                 this.input_buffer_position_ += len;
-
             }
         }
+
+
+        //private static void readCompleted(IAsyncResult ar) {
+        //    ManualResetEvent signal = ar.AsyncState as ManualResetEvent;
+
+        //    if ( ar.IsCompleted && ar.CompletedSynchronously )
+        //        signal.Set();
+        //}
 
 
 

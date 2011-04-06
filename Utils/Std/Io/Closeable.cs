@@ -1,7 +1,7 @@
 /* -*- encoding: utf-8; -*- */
 
 
-namespace Ixion.Std.Io {
+namespace Std.Io {
 
 
     /// <summary>

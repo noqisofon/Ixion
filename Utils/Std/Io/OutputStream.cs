@@ -1,7 +1,7 @@
 /* -*- encoding: utf-8; -*- */
 
 
-namespace Ixion.Std.Io {
+namespace Std.Io {
     
     
     /// <summary>
@@ -19,14 +19,14 @@ namespace Ixion.Std.Io {
         /// <summary>
         /// 
         /// </summary>
-        public void Close() {
+        public virtual void Close() {
         }
 
 
         /// <summary>
         /// 
         /// </summary>
-        public void Flush() {
+        public virtual void Flush() {
         }
 
 
@@ -34,7 +34,7 @@ namespace Ixion.Std.Io {
         /// 
         /// </summary>
         /// <param name="buffer"></param>
-        public void Write(byte[] buffer) {
+        public virtual void Write(byte[] buffer) {
             this.Write( buffer, 0, buffer.Length );
         }
         /// <summary>
@@ -43,7 +43,7 @@ namespace Ixion.Std.Io {
         /// <param name="buffer"></param>
         /// <param name="offset"></param>
         /// <param name="len"></param>
-        public void Write(byte[] buffer, int offset, int len) {
+        public virtual void Write(byte[] buffer, int offset, int len) {
             int stop = len - offset;
             for ( int i = offset; i < stop; ++i ) {
                 this.Write( buffer[i] );
